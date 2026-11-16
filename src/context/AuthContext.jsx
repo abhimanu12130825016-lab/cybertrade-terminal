@@ -9,23 +9,10 @@ export function AuthProvider({ children }) {
   const [authError, setAuthError] = useState(null);
 
   useEffect(() => {
-    // Restore persistent session if any
+    // Restore active session only if user previously logged in
     const activeSession = StorageService.getActiveSession();
     if (activeSession) {
       setCurrentUser(activeSession);
-    } else {
-      // Auto initialize default demo operative if no users exist yet
-      const users = StorageService.getUsers();
-      if (users.length === 0) {
-        const demoUser = StorageService.registerUser({
-          name: 'Cyber Operative #01',
-          email: 'trader@cybertrade.io',
-          password: 'CyberPassword2026!'
-        });
-        StorageService.seedDemoEnvironment(demoUser.id);
-        StorageService.setActiveSession(demoUser);
-        setCurrentUser(demoUser);
-      }
     }
     setLoading(false);
   }, []);
@@ -47,7 +34,6 @@ export function AuthProvider({ children }) {
     setAuthError(null);
     try {
       const newUser = StorageService.registerUser({ name, email, password });
-      // Pre-seed new user with default strategy rules
       StorageService.setActiveSession(newUser);
       setCurrentUser(newUser);
       return { success: true, user: newUser };
@@ -62,11 +48,17 @@ export function AuthProvider({ children }) {
     let demo = StorageService.findUserByEmail('demo@cybertrade.io');
     if (!demo) {
       demo = StorageService.registerUser({
-        name: 'Neo Terminal [Test Pilot]',
+        name: 'Demo Trader',
         email: 'demo@cybertrade.io',
-        password: 'DemoCyberPassword99!'
+        password: 'DemoPassword2026!'
       });
       StorageService.seedDemoEnvironment(demo.id);
+    } else {
+      // Ensure demo data exists
+      const trades = StorageService.getTrades(demo.id);
+      if (trades.length === 0) {
+        StorageService.seedDemoEnvironment(demo.id);
+      }
     }
     StorageService.setActiveSession(demo);
     setCurrentUser(demo);
@@ -91,9 +83,6 @@ export function AuthProvider({ children }) {
     }
   };
 
-  /**
-   * Password strength checker
-   */
   const evaluatePasswordStrength = (pass = '') => {
     let score = 0;
     if (pass.length >= 8) score++;
@@ -102,11 +91,10 @@ export function AuthProvider({ children }) {
     if (/[0-9]/.test(pass)) score++;
     if (/[^A-Za-z0-9]/.test(pass)) score++;
 
-    if (score <= 1) return { label: 'VULNERABLE', color: 'text-rose-500', bg: 'bg-rose-500', percent: 20 };
-    if (score === 2) return { label: 'BASIC', color: 'text-amber-400', bg: 'bg-amber-400', percent: 40 };
-    if (score === 3) return { label: 'FORTIFIED', color: 'text-cyan-400', bg: 'bg-cyan-400', percent: 65 };
-    if (score === 4) return { label: 'ENCRYPTED', color: 'text-emerald-400', bg: 'bg-emerald-400', percent: 85 };
-    return { label: 'CYBER-SHIELDED', color: 'text-emerald-300', bg: 'bg-emerald-300', percent: 100 };
+    if (score <= 1) return { label: 'Weak', color: 'text-rose-400', bg: 'bg-rose-500', percent: 25 };
+    if (score === 2) return { label: 'Medium', color: 'text-amber-400', bg: 'bg-amber-400', percent: 50 };
+    if (score === 3) return { label: 'Good', color: 'text-cyan-400', bg: 'bg-cyan-400', percent: 75 };
+    return { label: 'Strong', color: 'text-emerald-400', bg: 'bg-emerald-400', percent: 100 };
   };
 
   const isCloudConfigured = Boolean(

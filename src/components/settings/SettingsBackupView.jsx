@@ -4,8 +4,6 @@ import {
   Database,
   Download,
   Upload,
-  Cloud,
-  ShieldCheck,
   RotateCcw,
   Trash2,
   CheckCircle2,
@@ -54,7 +52,7 @@ export default function SettingsBackupView() {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `CyberTrade_Backup_${currentUser?.name?.replace(/\s+/g, '_') || 'Operative'}_${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `CyberTrade_Backup_${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -98,7 +96,7 @@ export default function SettingsBackupView() {
     reader.readAsText(file);
   };
 
-  const sampleEnvConfig = `# CYBERTRADE TERMINAL CLOUD SYNC CONFIG (.env.local)
+  const sampleEnvConfig = `# CYBERTRADE TERMINAL CLOUD SYNC (.env.local)
 VITE_SUPABASE_URL=https://xyzcompany.supabase.co
 VITE_SUPABASE_ANON_KEY=eyJhbGciOi...
 # OR FIREBASE
@@ -111,19 +109,19 @@ VITE_FIREBASE_API_KEY=AIzaSy...`;
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Title */}
-      <div className="p-4 sm:p-5 bg-[#0D0E15]/90 border border-cyan-500/20 rounded-2xl cyber-panel flex items-center justify-between">
+      <div className="p-4 bg-[#111420] border border-slate-800 rounded-xl flex items-center justify-between">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-cyan-500/10 border border-cyan-500/30 rounded-xl text-cyan-400">
-            <Sliders className="w-6 h-6" />
+          <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <Sliders className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="font-orbitron text-lg font-bold text-white tracking-wide">
-              OPERATIVE SETTINGS & DATA VAULT
+            <h2 className="font-orbitron text-sm font-bold text-white tracking-wide">
+              SETTINGS & DATA VAULT
             </h2>
             <p className="text-xs text-slate-400 font-mono">
-              Account telemetry, cloud adapter configuration, and zero-loss snapshot controls
+              Account profile, cloud persistence configuration, and zero-loss backups
             </p>
           </div>
         </div>
@@ -131,46 +129,45 @@ VITE_FIREBASE_API_KEY=AIzaSy...`;
 
       {importStatus && (
         <div
-          className={`p-4 rounded-xl flex items-center gap-3 text-xs font-mono border ${
+          className={`p-3.5 rounded-xl flex items-center gap-2.5 text-xs font-mono border ${
             importStatus.type === 'success'
               ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
               : 'bg-rose-950/40 border-rose-500/40 text-rose-300'
           }`}
         >
           {importStatus.type === 'success' ? (
-            <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+            <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
           ) : (
-            <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
+            <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
           )}
           <span>{importStatus.message}</span>
         </div>
       )}
 
-      {/* Grid of Sections */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+      <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
         {/* Profile Settings */}
-        <div className="p-5 bg-[#0D0E15]/90 border border-cyan-500/20 rounded-2xl cyber-panel space-y-4">
+        <div className="p-4 sm:p-5 bg-[#111420] border border-slate-800 rounded-xl space-y-4">
           <div className="flex items-center gap-2 pb-3 border-b border-slate-800">
-            <Cpu className="w-5 h-5 text-cyan-400" />
-            <h3 className="font-orbitron text-sm font-bold text-white">
-              OPERATIVE IDENTITY
+            <Cpu className="w-4 h-4 text-cyan-400" />
+            <h3 className="font-orbitron text-xs font-bold text-white">
+              TRADER IDENTITY
             </h3>
           </div>
 
           <form onSubmit={handleSaveProfile} className="space-y-3 font-mono text-xs">
             <div>
-              <label className="block text-slate-400 mb-1">CALL SIGN / NAME</label>
+              <label className="block text-slate-400 mb-1">Callsign / Name</label>
               <input
                 type="text"
                 required
                 value={callsign}
                 onChange={(e) => setCallsign(e.target.value)}
-                className="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-cyan-400 rounded-lg text-slate-100 font-bold"
+                className="w-full px-3 py-2 bg-[#090B12] border border-slate-800 focus:border-cyan-400 rounded-lg text-slate-100 font-bold"
               />
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1">AUTHENTICATED EMAIL</label>
+              <label className="block text-slate-400 mb-1">Authenticated Email</label>
               <input
                 type="text"
                 disabled
@@ -180,17 +177,17 @@ VITE_FIREBASE_API_KEY=AIzaSy...`;
             </div>
 
             <div>
-              <label className="block text-slate-400 mb-1">BASE CURRENCY SYMBOL</label>
+              <label className="block text-slate-400 mb-1">Base Currency</label>
               <div className="flex gap-2">
                 {['$', '₹', '€'].map((sym) => (
                   <button
                     key={sym}
                     type="button"
                     onClick={() => setCurrency(sym)}
-                    className={`flex-1 py-2 rounded-lg font-bold transition-all ${
+                    className={`flex-1 py-1.5 rounded-lg font-bold transition-colors ${
                       currency === sym
-                        ? 'bg-cyan-500/20 text-cyan-300 border border-cyan-400 shadow-neon-cyan'
-                        : 'bg-slate-950 text-slate-400 border border-slate-800'
+                        ? 'bg-slate-800 text-cyan-400 border border-cyan-500/40'
+                        : 'bg-[#090B12] text-slate-400 border border-slate-800'
                     }`}
                   >
                     {sym} ({sym === '$' ? 'USD' : sym === '₹' ? 'INR' : 'EUR'})
@@ -201,44 +198,40 @@ VITE_FIREBASE_API_KEY=AIzaSy...`;
 
             <button
               type="submit"
-              className="w-full py-2 cyber-btn-cyan rounded-lg uppercase font-bold text-xs mt-2"
+              className="w-full py-2 btn-primary rounded-lg font-bold text-xs mt-2"
             >
-              {profileSaved ? 'Profile Updated!' : 'Update Operative Profile'}
+              {profileSaved ? 'Profile Saved' : 'Save Changes'}
             </button>
           </form>
         </div>
 
-        {/* Persistence Engine Status */}
-        <div className="p-5 bg-[#0D0E15]/90 border border-purple-500/30 rounded-2xl cyber-panel space-y-4">
+        {/* Persistence Status */}
+        <div className="p-4 sm:p-5 bg-[#111420] border border-slate-800 rounded-xl space-y-3 font-mono text-xs">
           <div className="flex items-center justify-between pb-3 border-b border-slate-800">
-            <div className="flex items-center gap-2">
-              <Cloud className="w-5 h-5 text-purple-400" />
-              <h3 className="font-orbitron text-sm font-bold text-white">
-                PERSISTENCE ADAPTER STATUS
-              </h3>
-            </div>
+            <h3 className="font-orbitron text-xs font-bold text-white">
+              STORAGE PERSISTENCE
+            </h3>
             <span
-              className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+              className={`text-[10px] px-2 py-0.5 rounded border ${
                 isCloudConfigured
                   ? 'bg-emerald-950 text-emerald-400 border-emerald-500/40'
-                  : 'bg-cyan-950 text-cyan-400 border-cyan-500/40'
+                  : 'bg-slate-900 text-slate-300 border-slate-700'
               }`}
             >
-              {isCloudConfigured ? 'CLOUD CONNECTED' : 'LOCAL-FIRST ACTIVE'}
+              {isCloudConfigured ? 'Cloud Connected' : 'Local Storage Active'}
             </span>
           </div>
 
-          <p className="text-xs text-slate-400 font-mono leading-relaxed">
-            CyberTrade Terminal is currently persisting data via{' '}
-            <strong className="text-cyan-400">Isolated Local Storage & IndexedDB</strong>. To enable cross-device cloud persistence, add your Supabase or Firebase keys to <code className="text-purple-300 bg-slate-950 px-1 py-0.5 rounded border border-slate-800">.env</code>.
+          <p className="text-slate-400 text-xs leading-relaxed">
+            Data is currently persisted in your browser's private storage. To sync across multiple machines, configure Supabase or Firebase in <code className="text-cyan-400 bg-[#090B12] px-1 py-0.5 rounded border border-slate-800">.env</code>.
           </p>
 
-          <div className="p-3 bg-slate-950 border border-slate-800 rounded-lg text-xs font-mono text-slate-400 space-y-2">
+          <div className="p-3 bg-[#090B12] border border-slate-800 rounded-lg text-slate-400 space-y-1.5">
             <div className="flex justify-between items-center text-[10px] text-slate-500">
-              <span>ENVIRONMENT TEMPLATE</span>
+              <span>CONFIG TEMPLATE</span>
               <button
                 onClick={handleCopyEnv}
-                className="text-cyan-400 hover:text-cyan-300 flex items-center gap-1"
+                className="text-cyan-400 hover:text-white flex items-center gap-1"
               >
                 {copiedEnv ? <Check className="w-3 h-3" /> : <Copy className="w-3 h-3" />}
                 <span>{copiedEnv ? 'Copied' : 'Copy'}</span>
@@ -251,59 +244,59 @@ VITE_FIREBASE_API_KEY=AIzaSy...`;
         </div>
       </div>
 
-      {/* Snapshot Vault Actions */}
-      <div className="p-5 bg-[#0D0E15]/90 border border-cyan-500/20 rounded-2xl cyber-panel space-y-4">
+      {/* Snapshot Vault */}
+      <div className="p-4 sm:p-5 bg-[#111420] border border-slate-800 rounded-xl space-y-4">
         <div className="flex items-center gap-2 pb-3 border-b border-slate-800">
-          <Database className="w-5 h-5 text-cyan-400" />
-          <h3 className="font-orbitron text-sm font-bold text-white">
-            SNAPSHOT VAULT & DATA INTEGRITY
+          <Database className="w-4 h-4 text-cyan-400" />
+          <h3 className="font-orbitron text-xs font-bold text-white">
+            SNAPSHOT EXPORTS & RESTORATION
           </h3>
         </div>
 
-        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-          <div className="p-4 bg-slate-900/60 border border-slate-800 rounded-xl space-y-3 flex flex-col justify-between">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+          <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-xl flex flex-col justify-between space-y-2.5">
             <div>
-              <span className="text-xs font-mono font-bold text-cyan-300 block">
-                FULL JSON BACKUP
+              <span className="text-xs font-mono font-bold text-slate-200 block">
+                Full JSON Backup
               </span>
-              <p className="text-[11px] text-slate-400 font-mono mt-1">
-                Zero-loss complete snapshot of all trades, custom rules, and daily checklist adherence.
+              <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                Complete archive of trades, strategy rules, and daily checklist adherence.
               </p>
             </div>
             <button
               onClick={handleDownloadJSON}
-              className="w-full py-2 cyber-btn-cyan rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-1.5"
+              className="w-full py-2 btn-secondary rounded-lg text-xs font-mono font-medium flex items-center justify-center gap-1.5"
             >
-              <Download className="w-4 h-4" />
-              <span>Export JSON Snapshot</span>
+              <Download className="w-3.5 h-3.5" />
+              <span>Export JSON</span>
             </button>
           </div>
 
-          <div className="p-4 bg-slate-900/60 border border-slate-800 rounded-xl space-y-3 flex flex-col justify-between">
+          <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-xl flex flex-col justify-between space-y-2.5">
             <div>
-              <span className="text-xs font-mono font-bold text-emerald-300 block">
-                TRADING SPREADSHEET (CSV)
+              <span className="text-xs font-mono font-bold text-slate-200 block">
+                Spreadsheet (CSV)
               </span>
-              <p className="text-[11px] text-slate-400 font-mono mt-1">
-                Tabular format export for external spreadsheet modeling, taxes, or machine learning.
+              <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                Export trade records for Excel, Google Sheets, or custom modeling.
               </p>
             </div>
             <button
               onClick={handleDownloadCSV}
-              className="w-full py-2 cyber-btn-emerald rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-1.5"
+              className="w-full py-2 btn-secondary rounded-lg text-xs font-mono font-medium flex items-center justify-center gap-1.5"
             >
-              <Download className="w-4 h-4" />
-              <span>Export CSV File</span>
+              <Download className="w-3.5 h-3.5" />
+              <span>Export CSV</span>
             </button>
           </div>
 
-          <div className="p-4 bg-slate-900/60 border border-slate-800 rounded-xl space-y-3 flex flex-col justify-between">
+          <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-xl flex flex-col justify-between space-y-2.5">
             <div>
-              <span className="text-xs font-mono font-bold text-purple-300 block">
-                RESTORE FROM BACKUP
+              <span className="text-xs font-mono font-bold text-slate-200 block">
+                Restore Snapshot
               </span>
-              <p className="text-[11px] text-slate-400 font-mono mt-1">
-                Upload a verified JSON backup snapshot to instantly restore account records.
+              <p className="text-[11px] text-slate-400 font-mono mt-0.5">
+                Upload a verified JSON backup to instantly restore all data.
               </p>
             </div>
             <div>
@@ -316,10 +309,10 @@ VITE_FIREBASE_API_KEY=AIzaSy...`;
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="w-full py-2 cyber-btn-magenta rounded-lg text-xs font-mono font-bold flex items-center justify-center gap-1.5"
+                className="w-full py-2 btn-secondary rounded-lg text-xs font-mono font-medium flex items-center justify-center gap-1.5"
               >
-                <Upload className="w-4 h-4" />
-                <span>Upload JSON Backup</span>
+                <Upload className="w-3.5 h-3.5" />
+                <span>Upload JSON</span>
               </button>
             </div>
           </div>
@@ -327,54 +320,52 @@ VITE_FIREBASE_API_KEY=AIzaSy...`;
       </div>
 
       {/* Danger Zone */}
-      <div className="p-5 bg-rose-950/20 border border-rose-500/30 rounded-2xl cyber-panel space-y-4">
-        <div className="flex items-center gap-2 pb-3 border-b border-rose-500/30">
-          <Trash2 className="w-5 h-5 text-rose-400" />
-          <h3 className="font-orbitron text-sm font-bold text-rose-300">
-            MAINTENANCE & DANGER ZONE
+      <div className="p-4 sm:p-5 bg-rose-950/20 border border-rose-500/20 rounded-xl space-y-3 font-mono text-xs">
+        <div className="flex items-center gap-2 pb-2.5 border-b border-rose-500/20">
+          <Trash2 className="w-4 h-4 text-rose-400" />
+          <h3 className="font-orbitron text-xs font-bold text-rose-300">
+            MAINTENANCE & PURGE
           </h3>
         </div>
 
-        <div className="flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <span className="font-bold text-white block">Seed Demonstration History</span>
-            <p className="text-slate-400 text-[11px] mt-0.5">
-              Populate account with 8 realistic multi-asset trades and psychological checklist history.
+            <span className="font-semibold text-white block">Seed Demo History</span>
+            <p className="text-slate-400 text-[11px]">
+              Load 8 sample multi-asset executions with strategy checklist history.
             </p>
           </div>
           <button
             onClick={seedDemoData}
-            className="px-4 py-2 bg-slate-900 hover:bg-slate-800 border border-cyan-500/40 text-cyan-300 rounded-lg flex items-center gap-1.5"
+            className="px-3.5 py-1.5 bg-slate-900 border border-slate-700 hover:border-cyan-400 text-slate-200 rounded-lg flex items-center gap-1.5"
           >
-            <RotateCcw className="w-4 h-4" />
+            <RotateCcw className="w-3.5 h-3.5" />
             <span>Load Demo Data</span>
           </button>
         </div>
 
-        <div className="pt-3 border-t border-slate-800 flex flex-wrap items-center justify-between gap-4 font-mono text-xs">
+        <div className="pt-2.5 border-t border-slate-800 flex flex-wrap items-center justify-between gap-3">
           <div>
-            <span className="font-bold text-rose-400 block">Purge All Trade Records</span>
-            <p className="text-slate-400 text-[11px] mt-0.5">
-              Permanently wipe all trades and daily checklist entries for this operative account.
+            <span className="font-semibold text-rose-400 block">Purge Current Account Data</span>
+            <p className="text-slate-400 text-[11px]">
+              Permanently wipe all trades and checklists for this profile.
             </p>
           </div>
           <button
             onClick={() => setIsResetConfirmOpen(true)}
-            className="px-4 py-2 cyber-btn-crimson rounded-lg font-bold flex items-center gap-1.5"
+            className="px-3.5 py-1.5 btn-danger rounded-lg text-xs font-semibold"
           >
-            <Trash2 className="w-4 h-4" />
-            <span>Purge Everything</span>
+            Purge Data
           </button>
         </div>
       </div>
 
-      {/* Confirmation Modal for Reset */}
       <ConfirmModal
         isOpen={isResetConfirmOpen}
-        title="PURGE OPERATIVE DATA VAULT"
-        message="Are you completely sure? This will wipe all trade logs, statistics, and daily strategy checklists for your current profile. We strongly advise taking an Export Backup first."
-        confirmText="Execute Complete Purge"
-        cancelText="Abort"
+        title="Purge Account Data"
+        message="Are you sure? This will wipe all trade logs and daily strategy checklists for your current profile."
+        confirmText="Confirm Purge"
+        cancelText="Cancel"
         onConfirm={() => {
           clearAllData();
           setIsResetConfirmOpen(false);

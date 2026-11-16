@@ -3,12 +3,11 @@ import {
   LayoutDashboard,
   PlusCircle,
   CalendarDays,
-  ShieldAlert,
+  ShieldCheck,
   Sliders,
   ChevronLeft,
   ChevronRight,
-  TrendingUp,
-  Cpu
+  TrendingUp
 } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
 
@@ -28,20 +27,20 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
       label: 'Log Date Trades',
       shortLabel: 'Logger',
       icon: PlusCircle,
-      badge: 'Active'
+      badge: null
     },
     {
       id: 'history',
-      label: 'Date-Grouped History',
+      label: 'Date History',
       shortLabel: 'History',
       icon: CalendarDays,
       badge: metrics.totalTrades > 0 ? metrics.totalTrades : null
     },
     {
       id: 'rules',
-      label: 'Strategy Rules Engine',
+      label: 'Strategy Rules',
       shortLabel: 'Rules',
-      icon: ShieldAlert,
+      icon: ShieldCheck,
       badge: `${disciplineAnalytics.overallDisciplineScore}%`
     },
     {
@@ -55,29 +54,28 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
 
   return (
     <aside
-      className={`hidden md:flex flex-col border-r border-cyan-500/20 bg-[#080911]/80 backdrop-blur-xl transition-all duration-300 z-30 ${
-        isCollapsed ? 'w-20' : 'w-64'
+      className={`hidden md:flex flex-col border-r border-slate-800 bg-[#0C0E17] transition-all duration-200 z-30 ${
+        isCollapsed ? 'w-16' : 'w-60'
       }`}
     >
-      {/* Sidebar header toggle */}
-      <div className="p-4 flex items-center justify-between border-b border-slate-800/80">
+      {/* Collapse Toggle */}
+      <div className="p-3 flex items-center justify-between border-b border-slate-800/80">
         {!isCollapsed && (
-          <div className="flex items-center gap-2 text-xs font-mono text-cyan-400 tracking-wider">
-            <Cpu className="w-4 h-4 text-cyan-400" />
-            <span className="font-bold">SYSTEM MODULES</span>
-          </div>
+          <span className="text-[11px] font-mono uppercase text-slate-400 font-bold tracking-wider px-2">
+            Navigation
+          </span>
         )}
         <button
           onClick={() => setIsCollapsed(!isCollapsed)}
-          className="p-1.5 text-slate-400 hover:text-cyan-400 hover:bg-slate-800/60 rounded-lg transition-colors ml-auto"
+          className="p-1.5 text-slate-400 hover:text-white hover:bg-slate-800 rounded-lg transition-colors ml-auto"
           title={isCollapsed ? 'Expand Sidebar' : 'Collapse Sidebar'}
         >
-          {isCollapsed ? <ChevronRight className="w-5 h-5" /> : <ChevronLeft className="w-5 h-5" />}
+          {isCollapsed ? <ChevronRight className="w-4 h-4" /> : <ChevronLeft className="w-4 h-4" />}
         </button>
       </div>
 
-      {/* Navigation Links */}
-      <nav className="flex-1 p-3 space-y-1.5 overflow-y-auto">
+      {/* Nav Items */}
+      <nav className="flex-1 p-2 space-y-1 overflow-y-auto">
         {navItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeTab === item.id;
@@ -86,16 +84,16 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
             <button
               key={item.id}
               onClick={() => setActiveTab(item.id)}
-              className={`w-full flex items-center gap-3 px-3 py-3 rounded-xl text-xs font-mono transition-all text-left group ${
+              className={`w-full flex items-center gap-3 px-3 py-2.5 rounded-lg text-xs font-mono transition-colors text-left ${
                 isActive
-                  ? 'bg-cyan-500/15 text-cyan-300 border border-cyan-500/40 shadow-neon-cyan font-bold'
-                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900/60 border border-transparent'
+                  ? 'bg-slate-800 text-cyan-400 font-semibold'
+                  : 'text-slate-400 hover:text-slate-200 hover:bg-slate-900'
               }`}
               title={item.label}
             >
               <Icon
-                className={`w-5 h-5 shrink-0 transition-transform group-hover:scale-110 ${
-                  isActive ? 'text-cyan-400' : 'text-slate-500 group-hover:text-cyan-400'
+                className={`w-4 h-4 shrink-0 ${
+                  isActive ? 'text-cyan-400' : 'text-slate-400'
                 }`}
               />
 
@@ -103,13 +101,7 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
                 <div className="flex-1 flex items-center justify-between truncate">
                   <span className="truncate">{item.label}</span>
                   {item.badge && (
-                    <span
-                      className={`text-[10px] px-2 py-0.5 rounded-full font-mono border ${
-                        item.id === 'rules'
-                          ? 'bg-emerald-950/60 text-emerald-400 border-emerald-500/40'
-                          : 'bg-cyan-950/60 text-cyan-400 border-cyan-500/40'
-                      }`}
-                    >
+                    <span className="text-[10px] px-1.5 py-0.2 rounded bg-slate-900 border border-slate-700 text-slate-300">
                       {item.badge}
                     </span>
                   )}
@@ -120,29 +112,26 @@ export default function Sidebar({ isCollapsed, setIsCollapsed }) {
         })}
       </nav>
 
-      {/* Mini Discipline Telemetry Footer */}
+      {/* Mini Discipline Score Box */}
       {!isCollapsed && (
-        <div className="p-4 m-3 bg-[#0D0E15] border border-cyan-500/20 rounded-xl space-y-2.5">
-          <div className="flex items-center justify-between text-xs font-mono">
-            <span className="text-slate-400 flex items-center gap-1.5">
-              <TrendingUp className="w-3.5 h-3.5 text-emerald-400" />
-              Discipline Edge:
-            </span>
-            <span className="text-emerald-400 font-bold cyber-num">
+        <div className="p-3 m-2 bg-[#111420] border border-slate-800 rounded-xl space-y-2 text-xs font-mono">
+          <div className="flex items-center justify-between">
+            <span className="text-slate-400">Discipline Score</span>
+            <span className="text-emerald-400 font-bold font-tabular">
               {disciplineAnalytics.overallDisciplineScore}%
             </span>
           </div>
 
-          <div className="w-full h-1.5 bg-slate-800 rounded-full overflow-hidden">
+          <div className="w-full h-1 bg-slate-800 rounded-full overflow-hidden">
             <div
-              className="h-full bg-gradient-to-r from-cyan-400 to-emerald-400 rounded-full transition-all duration-500"
+              className="h-full bg-emerald-500 rounded-full transition-all"
               style={{ width: `${disciplineAnalytics.overallDisciplineScore}%` }}
             />
           </div>
 
-          <div className="flex justify-between text-[10px] font-mono text-slate-500">
-            <span>TOTAL TRADES: {metrics.totalTrades}</span>
-            <span>WIN: {metrics.winRate}%</span>
+          <div className="flex justify-between text-[10px] text-slate-500">
+            <span>{metrics.totalTrades} Trades</span>
+            <span>{metrics.winRate}% Win</span>
           </div>
         </div>
       )}

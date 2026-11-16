@@ -19,7 +19,7 @@ export default function BackupExportModal({ isOpen, onClose }) {
     const url = URL.createObjectURL(blob);
     const a = document.createElement('a');
     a.href = url;
-    a.download = `CyberTrade_Backup_${currentUser?.name?.replace(/\s+/g, '_') || 'Operative'}_${new Date().toISOString().split('T')[0]}.json`;
+    a.download = `CyberTrade_Backup_${new Date().toISOString().split('T')[0]}.json`;
     document.body.appendChild(a);
     a.click();
     document.body.removeChild(a);
@@ -64,103 +64,79 @@ export default function BackupExportModal({ isOpen, onClose }) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-      <div className="relative w-full max-w-lg p-6 bg-[#0D0E15] border border-cyan-500/30 rounded-xl cyber-panel-elevated shadow-neon-cyan">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+      <div className="relative w-full max-w-lg p-6 bg-[#131726] border border-slate-700 rounded-xl shadow-2xl">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-cyan-400 transition-colors"
+          className="absolute top-4 right-4 text-slate-400 hover:text-white"
         >
           <X className="w-5 h-5" />
         </button>
 
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-cyan-500/10 border border-cyan-500/30 rounded-lg text-cyan-400">
-            <Database className="w-6 h-6" />
+          <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <Database className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="font-orbitron text-lg font-bold text-white tracking-wide">
-              DATA VAULT & BACKUPS
+            <h2 className="font-orbitron text-sm font-bold text-white tracking-wide">
+              DATA VAULT & EXPORT
             </h2>
-            <p className="text-xs text-slate-400">
-              Zero-loss local encryption + JSON/CSV snapshot export
+            <p className="text-xs text-slate-400 font-mono">
+              Zero-loss local snapshots and CSV exports
             </p>
           </div>
         </div>
 
         {importStatus && (
           <div
-            className={`mt-4 p-3 rounded-lg flex items-center gap-3 text-xs font-mono border ${
+            className={`mt-4 p-3 rounded-lg flex items-center gap-2 text-xs font-mono border ${
               importStatus.type === 'success'
                 ? 'bg-emerald-950/40 border-emerald-500/40 text-emerald-300'
                 : 'bg-rose-950/40 border-rose-500/40 text-rose-300'
             }`}
           >
             {importStatus.type === 'success' ? (
-              <CheckCircle2 className="w-5 h-5 text-emerald-400 shrink-0" />
+              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0" />
             ) : (
-              <AlertCircle className="w-5 h-5 text-rose-400 shrink-0" />
+              <AlertCircle className="w-4 h-4 text-rose-400 shrink-0" />
             )}
             <span>{importStatus.message}</span>
           </div>
         )}
 
-        <div className="mt-6 space-y-4">
-          {/* JSON Full Backup */}
-          <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-lg flex items-center justify-between">
+        <div className="mt-5 space-y-3 font-mono text-xs">
+          <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-between">
             <div>
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-cyan-400" />
-                <span className="text-sm font-semibold text-slate-200">
-                  Full Journal Snapshot (JSON)
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-1">
-                Complete schema: trades, custom rules, daily adherence & notes.
-              </p>
+              <span className="font-semibold text-slate-200 block">Full JSON Snapshot</span>
+              <p className="text-[11px] text-slate-400">Complete archive of trades, rules, and checklists.</p>
             </div>
             <button
               onClick={handleDownloadJSON}
-              className="px-3 py-2 text-xs font-mono font-medium cyber-btn-cyan rounded-lg flex items-center gap-1.5"
+              className="px-3 py-1.5 btn-primary rounded-lg font-semibold flex items-center gap-1.5"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-3.5 h-3.5" />
               <span>Export</span>
             </button>
           </div>
 
-          {/* CSV Spreadsheet Export */}
-          <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-lg flex items-center justify-between">
+          <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-between">
             <div>
-              <div className="flex items-center gap-2">
-                <FileText className="w-4 h-4 text-emerald-400" />
-                <span className="text-sm font-semibold text-slate-200">
-                  Trading History (CSV)
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-1">
-                Compatible with Excel, Google Sheets, and quantitative software.
-              </p>
+              <span className="font-semibold text-slate-200 block">Trading History (CSV)</span>
+              <p className="text-[11px] text-slate-400">Spreadsheet format for Excel or Google Sheets.</p>
             </div>
             <button
               onClick={handleDownloadCSV}
-              className="px-3 py-2 text-xs font-mono font-medium cyber-btn-emerald rounded-lg flex items-center gap-1.5"
+              className="px-3 py-1.5 btn-secondary rounded-lg font-semibold flex items-center gap-1.5"
             >
-              <Download className="w-4 h-4" />
+              <Download className="w-3.5 h-3.5" />
               <span>Export</span>
             </button>
           </div>
 
-          {/* Restore JSON Backup */}
-          <div className="p-4 bg-slate-900/50 border border-slate-800 rounded-lg flex items-center justify-between">
+          <div className="p-3.5 bg-slate-900 border border-slate-800 rounded-lg flex items-center justify-between">
             <div>
-              <div className="flex items-center gap-2">
-                <Upload className="w-4 h-4 text-purple-400" />
-                <span className="text-sm font-semibold text-slate-200">
-                  Restore from JSON Backup
-                </span>
-              </div>
-              <p className="text-xs text-slate-400 mt-1">
-                Upload a previous snapshot to instantly recover all records.
-              </p>
+              <span className="font-semibold text-slate-200 block">Restore from Backup</span>
+              <p className="text-[11px] text-slate-400">Upload a JSON backup to restore records.</p>
             </div>
             <div>
               <input
@@ -172,21 +148,21 @@ export default function BackupExportModal({ isOpen, onClose }) {
               />
               <button
                 onClick={() => fileInputRef.current?.click()}
-                className="px-3 py-2 text-xs font-mono font-medium cyber-btn-magenta rounded-lg flex items-center gap-1.5"
+                className="px-3 py-1.5 btn-secondary rounded-lg font-semibold flex items-center gap-1.5"
               >
-                <Upload className="w-4 h-4" />
+                <Upload className="w-3.5 h-3.5" />
                 <span>Upload</span>
               </button>
             </div>
           </div>
         </div>
 
-        <div className="mt-6 pt-4 border-t border-slate-800/80 flex justify-end">
+        <div className="mt-5 pt-3 border-t border-slate-800 flex justify-end">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white bg-slate-800/50 hover:bg-slate-800 border border-slate-700 rounded-lg"
+            className="px-3.5 py-1.5 text-xs font-mono text-slate-300 hover:text-white bg-slate-800 rounded-lg"
           >
-            Close Vault
+            Close
           </button>
         </div>
       </div>

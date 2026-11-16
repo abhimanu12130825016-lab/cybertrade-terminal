@@ -13,26 +13,25 @@ import { TrendingUp, Activity } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
 import { formatCurrency } from '../../utils/calculations';
 
-// Custom Cyber Tooltip
-function CustomTooltip({ active, payload, label, currency }) {
+function CustomTooltip({ active, payload, currency }) {
   if (active && payload && payload.length) {
     const data = payload[0].payload;
     const isProfit = data.cumulativePnl >= 0;
 
     return (
-      <div className="p-3 bg-[#0D0E15]/95 border border-cyan-500/50 rounded-xl shadow-neon-cyan backdrop-blur-md text-xs font-mono space-y-1">
-        <div className="text-cyan-400 font-bold tracking-wider">
-          DATE: {data.date}
+      <div className="p-2.5 bg-[#0D101B] border border-slate-700 rounded-lg shadow-xl text-xs font-mono space-y-1">
+        <div className="text-cyan-400 font-semibold">
+          Date: {data.date}
         </div>
         <div className="flex justify-between gap-4 text-slate-300">
-          <span>RUNNING EQUITY:</span>
-          <span className={`font-bold ${isProfit ? 'text-[#00FF9D]' : 'text-[#FF2A5F]'}`}>
+          <span>Running Equity:</span>
+          <span className={`font-bold ${isProfit ? 'text-emerald-400' : 'text-rose-400'}`}>
             {formatCurrency(data.cumulativePnl, currency)}
           </span>
         </div>
-        <div className="flex justify-between gap-4 text-slate-400">
-          <span>DAILY PnL:</span>
-          <span className={`font-semibold ${data.dailyPnl >= 0 ? 'text-[#00FF9D]' : 'text-[#FF2A5F]'}`}>
+        <div className="flex justify-between gap-4 text-slate-400 text-[11px]">
+          <span>Daily PnL:</span>
+          <span className={data.dailyPnl >= 0 ? 'text-emerald-400' : 'text-rose-400'}>
             {formatCurrency(data.dailyPnl, currency)}
           </span>
         </div>
@@ -45,77 +44,74 @@ function CustomTooltip({ active, payload, label, currency }) {
 export default function EquityChart() {
   const { chartSeries, currency, metrics } = useJournal();
   const data = chartSeries.equityCurveData;
-
   const isNetPositive = metrics.netPnl >= 0;
 
   return (
-    <div className="p-5 bg-[#0D0E15]/90 border border-cyan-500/20 rounded-2xl cyber-panel">
+    <div className="p-4 sm:p-5 bg-[#111420] border border-slate-800 rounded-xl">
       <div className="flex flex-wrap items-center justify-between gap-2 mb-4">
         <div>
           <div className="flex items-center gap-2">
             <TrendingUp className="w-4 h-4 text-cyan-400" />
-            <h3 className="font-orbitron text-sm font-bold tracking-wider text-white">
-              CUMULATIVE EQUITY CURVE
+            <h3 className="font-orbitron text-xs font-bold tracking-wide text-white">
+              CUMULATIVE EQUITY TRAJECTORY
             </h3>
           </div>
           <p className="text-xs text-slate-400 font-mono mt-0.5">
-            Running capital trajectory across executed trading dates
+            Running capital across selected dates
           </p>
         </div>
 
         <div className="flex items-center gap-2 text-xs font-mono">
-          <span className="text-slate-400">PEAK:</span>
-          <span className={`font-bold cyber-num ${isNetPositive ? 'text-[#00FF9D]' : 'text-[#FF2A5F]'}`}>
+          <span className="text-slate-400">Total:</span>
+          <span className={`font-bold font-tabular ${isNetPositive ? 'text-emerald-400' : 'text-rose-400'}`}>
             {formatCurrency(metrics.netPnl, currency)}
           </span>
         </div>
       </div>
 
       {data.length === 0 ? (
-        <div className="h-64 flex flex-col items-center justify-center text-center p-6 border border-dashed border-slate-800 rounded-xl text-slate-500 font-mono text-xs">
-          <Activity className="w-8 h-8 text-cyan-500/40 mb-2 animate-pulse" />
-          <p>NO EXECUTIONS LOGGED FOR THIS TIMEFRAME</p>
-          <p className="text-slate-600 mt-1">Add trades via the Logger to chart equity progression.</p>
+        <div className="h-64 flex flex-col items-center justify-center text-center p-6 border border-dashed border-slate-800 rounded-lg text-slate-500 font-mono text-xs">
+          <Activity className="w-6 h-6 text-slate-600 mb-2" />
+          <p>No executions in this timeframe.</p>
         </div>
       ) : (
-        <div className="h-72 w-full">
+        <div className="h-64 w-full">
           <ResponsiveContainer width="100%" height="100%">
-            <AreaChart data={data} margin={{ top: 10, right: 10, left: 0, bottom: 0 }}>
+            <AreaChart data={data} margin={{ top: 10, right: 10, left: -10, bottom: 0 }}>
               <defs>
-                <linearGradient id="cyberCyanGradient" x1="0" y1="0" x2="0" y2="1">
-                  <stop offset="5%" stopColor="#00F0FF" stopOpacity={0.35} />
-                  <stop offset="95%" stopColor="#00F0FF" stopOpacity={0.0} />
+                <linearGradient id="equityGradient" x1="0" y1="0" x2="0" y2="1">
+                  <stop offset="5%" stopColor="#00D8F6" stopOpacity={0.25} />
+                  <stop offset="95%" stopColor="#00D8F6" stopOpacity={0.0} />
                 </linearGradient>
               </defs>
 
-              <CartesianGrid strokeDasharray="3 3" stroke="#1E293B" opacity={0.6} />
+              <CartesianGrid strokeDasharray="3 3" stroke="#1E2436" vertical={false} />
 
               <XAxis
                 dataKey="date"
-                stroke="#64748B"
+                stroke="#475569"
                 tick={{ fill: '#94A3B8', fontSize: 10, fontFamily: 'JetBrains Mono' }}
                 tickFormatter={(str) => (str ? str.slice(5) : '')}
               />
 
               <YAxis
-                stroke="#64748B"
+                stroke="#475569"
                 tick={{ fill: '#94A3B8', fontSize: 10, fontFamily: 'JetBrains Mono' }}
                 tickFormatter={(val) => `${currency}${val}`}
               />
 
               <Tooltip content={<CustomTooltip currency={currency} />} />
 
-              <ReferenceLine y={0} stroke="#334155" strokeDasharray="3 3" />
+              <ReferenceLine y={0} stroke="#334155" />
 
               <Area
                 type="monotone"
                 dataKey="cumulativePnl"
-                stroke="#00F0FF"
-                strokeWidth={2.5}
+                stroke="#00D8F6"
+                strokeWidth={2}
                 fillOpacity={1}
-                fill="url(#cyberCyanGradient)"
-                dot={{ stroke: '#00F0FF', strokeWidth: 2, r: 3, fill: '#050508' }}
-                activeDot={{ stroke: '#00F0FF', strokeWidth: 3, r: 5, fill: '#FFFFFF' }}
+                fill="url(#equityGradient)"
+                dot={{ stroke: '#00D8F6', strokeWidth: 1.5, r: 2.5, fill: '#0A0C14' }}
               />
             </AreaChart>
           </ResponsiveContainer>

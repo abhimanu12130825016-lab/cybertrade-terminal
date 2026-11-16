@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Calendar, Filter, X } from 'lucide-react';
+import { Filter, X } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
 
 export default function TimeframeSelector() {
@@ -23,10 +23,10 @@ export default function TimeframeSelector() {
   };
 
   return (
-    <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#0D0E15]/90 border border-cyan-500/20 rounded-xl cyber-panel">
-      <div className="flex items-center gap-2 text-xs font-mono text-slate-300">
+    <div className="flex flex-wrap items-center justify-between gap-3 p-3 bg-[#111420] border border-slate-800 rounded-xl">
+      <div className="flex items-center gap-2 text-xs font-mono text-slate-400">
         <Filter className="w-4 h-4 text-cyan-400" />
-        <span className="text-slate-400 hidden sm:inline">TIMEFRAME WINDOW:</span>
+        <span className="hidden sm:inline">Timeframe Window:</span>
       </div>
 
       <div className="flex items-center gap-1.5 flex-wrap">
@@ -43,16 +43,16 @@ export default function TimeframeSelector() {
                 }
               }}
               title={tf.full}
-              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-semibold transition-all ${
+              className={`px-3 py-1.5 rounded-lg text-xs font-mono font-medium transition-colors ${
                 isActive
-                  ? 'bg-cyan-500 text-slate-950 shadow-neon-cyan'
-                  : 'bg-slate-900/80 text-slate-300 hover:text-white hover:bg-slate-800 border border-slate-800'
+                  ? 'bg-cyan-500 text-slate-950 font-bold'
+                  : 'bg-slate-900 text-slate-400 hover:text-white border border-slate-800'
               }`}
             >
               {tf.label}
               {tf.id === 'CUSTOM' && customRange.startDate && (
-                <span className="ml-1 text-[10px] text-cyan-900 font-bold hidden sm:inline">
-                  [{customRange.startDate.slice(5)} to {customRange.endDate.slice(5)}]
+                <span className="ml-1 text-[10px] hidden sm:inline opacity-80">
+                  ({customRange.startDate.slice(5)} to {customRange.endDate.slice(5)})
                 </span>
               )}
             </button>
@@ -62,42 +62,39 @@ export default function TimeframeSelector() {
 
       {/* Custom Date Range Picker Modal */}
       {showCustomModal && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
-          <div className="relative w-full max-w-sm p-5 bg-[#0D0E15] border border-cyan-500/40 rounded-xl cyber-panel-elevated shadow-neon-cyan">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+          <div className="relative w-full max-w-sm p-5 bg-[#121624] border border-slate-700 rounded-xl shadow-2xl">
             <button
               onClick={() => setShowCustomModal(false)}
-              className="absolute top-3.5 right-3.5 text-slate-400 hover:text-cyan-400"
+              className="absolute top-3.5 right-3.5 text-slate-400 hover:text-white"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <div className="flex items-center gap-2 mb-4">
-              <Calendar className="w-5 h-5 text-cyan-400" />
-              <h3 className="font-orbitron text-sm font-bold text-white tracking-wide">
-                CUSTOM TIMEFRAME INTERVAL
-              </h3>
-            </div>
+            <h3 className="font-orbitron text-sm font-bold text-white mb-4">
+              Select Custom Date Range
+            </h3>
 
             <form onSubmit={handleCustomSubmit} className="space-y-3 font-mono text-xs">
               <div>
-                <label className="block text-slate-400 mb-1">START DATE</label>
+                <label className="block text-slate-400 mb-1">Start Date</label>
                 <input
                   type="date"
                   required
                   value={customRange.startDate}
                   onChange={(e) => setCustomRange({ ...customRange, startDate: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-cyan-400 rounded-lg text-slate-200"
+                  className="w-full px-3 py-2 bg-[#090B12] border border-slate-800 focus:border-cyan-400 rounded-lg text-slate-200"
                 />
               </div>
 
               <div>
-                <label className="block text-slate-400 mb-1">END DATE</label>
+                <label className="block text-slate-400 mb-1">End Date</label>
                 <input
                   type="date"
                   required
                   value={customRange.endDate}
                   onChange={(e) => setCustomRange({ ...customRange, endDate: e.target.value })}
-                  className="w-full px-3 py-2 bg-slate-950 border border-slate-800 focus:border-cyan-400 rounded-lg text-slate-200"
+                  className="w-full px-3 py-2 bg-[#090B12] border border-slate-800 focus:border-cyan-400 rounded-lg text-slate-200"
                 />
               </div>
 
@@ -105,15 +102,15 @@ export default function TimeframeSelector() {
                 <button
                   type="button"
                   onClick={() => setShowCustomModal(false)}
-                  className="flex-1 py-2 bg-slate-800 text-slate-300 hover:text-white rounded-lg uppercase"
+                  className="flex-1 py-2 bg-slate-800 text-slate-300 hover:text-white rounded-lg"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="flex-1 py-2 cyber-btn-cyan rounded-lg uppercase font-bold"
+                  className="flex-1 py-2 btn-primary rounded-lg font-semibold"
                 >
-                  Apply Window
+                  Apply
                 </button>
               </div>
             </form>

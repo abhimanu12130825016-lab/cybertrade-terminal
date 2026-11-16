@@ -3,11 +3,10 @@ import { AlertTriangle, X } from 'lucide-react';
 
 export default function ConfirmModal({
   isOpen,
-  title = 'Confirm Destructive Action',
+  title = 'Confirm Action',
   message = 'Are you sure you want to proceed? This action cannot be reversed.',
-  confirmText = 'Execute Purge',
-  cancelText = 'Abort',
-  variant = 'crimson', // 'crimson' | 'amber' | 'cyan'
+  confirmText = 'Confirm',
+  cancelText = 'Cancel',
   onConfirm,
   onClose
 }) {
@@ -22,34 +21,34 @@ export default function ConfirmModal({
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md animate-fade-in">
-      <div className="relative w-full max-w-md p-6 bg-[#0D0E15] border border-[#FF2A5F]/40 shadow-neon-crimson rounded-xl cyber-panel-elevated">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/75 backdrop-blur-sm">
+      <div className="relative w-full max-w-md p-6 bg-[#131726] border border-rose-500/30 rounded-xl shadow-2xl">
         <button
           onClick={onClose}
-          className="absolute top-4 right-4 text-slate-400 hover:text-slate-100 transition-colors"
+          className="absolute top-4 right-4 text-slate-400 hover:text-white"
         >
           <X className="w-5 h-5" />
         </button>
 
-        <div className="flex items-start gap-4">
-          <div className="p-3 bg-[#FF2A5F]/15 border border-[#FF2A5F]/40 rounded-lg text-[#FF2A5F]">
-            <AlertTriangle className="w-6 h-6 animate-pulse" />
+        <div className="flex items-start gap-3.5">
+          <div className="p-2.5 bg-rose-500/10 border border-rose-500/30 rounded-lg text-rose-400 shrink-0">
+            <AlertTriangle className="w-5 h-5" />
           </div>
 
           <div className="flex-1">
-            <h3 className="font-orbitron text-lg font-bold text-slate-100 tracking-wide">
+            <h3 className="font-orbitron text-sm font-bold text-white">
               {title}
             </h3>
-            <p className="mt-2 text-sm text-slate-300 leading-relaxed">
+            <p className="mt-1.5 text-xs text-slate-300 leading-relaxed font-mono">
               {message}
             </p>
           </div>
         </div>
 
-        <div className="mt-6 flex items-center justify-end gap-3 pt-4 border-t border-slate-800">
+        <div className="mt-5 flex items-center justify-end gap-2.5 pt-3 border-t border-slate-800">
           <button
             onClick={onClose}
-            className="px-4 py-2 text-xs font-mono uppercase tracking-wider text-slate-300 hover:text-white bg-slate-900/60 hover:bg-slate-800 border border-slate-700 rounded-lg transition-all"
+            className="px-3.5 py-1.5 text-xs font-mono text-slate-300 hover:text-white bg-slate-800 hover:bg-slate-700 rounded-lg transition-colors"
           >
             {cancelText}
           </button>
@@ -58,7 +57,7 @@ export default function ConfirmModal({
               onConfirm();
               onClose();
             }}
-            className="px-4 py-2 text-xs font-mono uppercase tracking-wider font-semibold text-white bg-[#FF2A5F] hover:bg-[#FF2A5F]/80 shadow-neon-crimson rounded-lg transition-all"
+            className="px-3.5 py-1.5 text-xs font-mono font-semibold text-white bg-rose-600 hover:bg-rose-500 rounded-lg transition-colors"
           >
             {confirmText}
           </button>

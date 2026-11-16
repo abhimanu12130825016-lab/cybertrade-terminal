@@ -4,30 +4,23 @@ import {
   ChevronDown,
   ChevronUp,
   Search,
-  Filter,
   ArrowUpRight,
   ArrowDownRight,
   Trash2,
-  Edit2,
-  CheckCircle2,
-  XCircle,
-  ShieldCheck,
-  AlertOctagon,
-  Sparkles
+  ShieldCheck
 } from 'lucide-react';
 import { useJournal } from '../../context/JournalContext';
 import { formatCurrency } from '../../utils/calculations';
 import ConfirmModal from '../common/ConfirmModal';
 
 export default function DateGroupedHistory() {
-  const { filteredTrades, deleteTrade, dailyChecks, rules, currency, setActiveTab } = useJournal();
+  const { filteredTrades, deleteTrade, dailyChecks, currency, setActiveTab } = useJournal();
 
   const [searchQuery, setSearchQuery] = useState('');
   const [outcomeFilter, setOutcomeFilter] = useState('ALL');
   const [expandedDates, setExpandedDates] = useState({});
   const [deleteTargetId, setDeleteTargetId] = useState(null);
 
-  // Filter trades by search & outcome
   const displayedTrades = useMemo(() => {
     return filteredTrades.filter((trade) => {
       const matchSearch =
@@ -43,7 +36,6 @@ export default function DateGroupedHistory() {
     });
   }, [filteredTrades, searchQuery, outcomeFilter]);
 
-  // Group trades by date
   const groupedByDate = useMemo(() => {
     const groups = {};
     displayedTrades.forEach((trade) => {
@@ -66,11 +58,9 @@ export default function DateGroupedHistory() {
       else groups[d].breakevens++;
     });
 
-    // Sort dates descending (newest first)
     return Object.values(groups).sort((a, b) => new Date(b.date) - new Date(a.date));
   }, [displayedTrades]);
 
-  // Auto expand all dates initially
   React.useEffect(() => {
     const initial = {};
     groupedByDate.forEach((g) => {
@@ -86,55 +76,45 @@ export default function DateGroupedHistory() {
     }));
   };
 
-  const expandAll = () => {
-    const all = {};
-    groupedByDate.forEach((g) => (all[g.date] = true));
-    setExpandedDates(all);
-  };
-
-  const collapseAll = () => {
-    setExpandedDates({});
-  };
-
   return (
-    <div className="space-y-6">
+    <div className="space-y-5">
       {/* Header & Controls Bar */}
-      <div className="p-4 sm:p-5 bg-[#0D0E15]/90 border border-cyan-500/20 rounded-2xl cyber-panel flex flex-wrap items-center justify-between gap-4">
+      <div className="p-4 bg-[#111420] border border-slate-800 rounded-xl flex flex-wrap items-center justify-between gap-4">
         <div className="flex items-center gap-3">
-          <div className="p-2.5 bg-cyan-500/10 border border-cyan-500/30 rounded-xl text-cyan-400">
-            <CalendarDays className="w-6 h-6" />
+          <div className="w-8 h-8 rounded-lg bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400">
+            <CalendarDays className="w-4 h-4" />
           </div>
           <div>
-            <h2 className="font-orbitron text-lg font-bold text-white tracking-wide">
+            <h2 className="font-orbitron text-sm font-bold text-white tracking-wide">
               DATE-GROUPED TRADE ARCHIVE
             </h2>
             <p className="text-xs text-slate-400 font-mono">
-              {displayedTrades.length} Trades across {groupedByDate.length} Active Trading Days
+              {displayedTrades.length} Trades across {groupedByDate.length} Active Days
             </p>
           </div>
         </div>
 
-        {/* Search & Outcome Filter */}
-        <div className="flex flex-wrap items-center gap-2.5 font-mono text-xs">
+        {/* Search & Filter */}
+        <div className="flex flex-wrap items-center gap-2 font-mono text-xs">
           <div className="relative">
-            <Search className="absolute left-3 top-2.5 w-4 h-4 text-slate-500" />
+            <Search className="absolute left-2.5 top-2.5 w-3.5 h-3.5 text-slate-500" />
             <input
               type="text"
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              placeholder="Search ticker, notes, date..."
-              className="pl-9 pr-3 py-1.5 bg-slate-950 border border-slate-800 focus:border-cyan-400 focus:outline-none rounded-lg text-slate-200 w-44 sm:w-56"
+              placeholder="Filter ticker, notes..."
+              className="pl-8 pr-3 py-1.5 bg-[#090B12] border border-slate-800 focus:border-cyan-400 focus:outline-none rounded-lg text-slate-200 w-44"
             />
           </div>
 
-          <div className="flex items-center bg-slate-950 border border-slate-800 rounded-lg p-0.5">
+          <div className="flex items-center bg-[#090B12] border border-slate-800 rounded-lg p-0.5">
             {['ALL', 'SUCCEEDED', 'FAILED', 'BREAKEVEN'].map((o) => (
               <button
                 key={o}
                 onClick={() => setOutcomeFilter(o)}
-                className={`px-2 py-1 rounded text-[10px] transition-all ${
+                className={`px-2 py-1 rounded text-[10px] transition-colors ${
                   outcomeFilter === o
-                    ? 'bg-cyan-500/20 text-cyan-300 font-bold border border-cyan-500/40'
+                    ? 'bg-slate-800 text-cyan-400 font-bold'
                     : 'text-slate-400 hover:text-white'
                 }`}
               >
@@ -142,43 +122,17 @@ export default function DateGroupedHistory() {
               </button>
             ))}
           </div>
-
-          <div className="flex items-center gap-1">
-            <button
-              onClick={expandAll}
-              className="px-2 py-1 bg-slate-900 border border-slate-800 text-slate-400 hover:text-white rounded text-[11px]"
-            >
-              Expand
-            </button>
-            <button
-              onClick={collapseAll}
-              className="px-2 py-1 bg-slate-900 border border-slate-800 text-slate-400 hover:text-white rounded text-[11px]"
-            >
-              Collapse
-            </button>
-          </div>
         </div>
       </div>
 
       {/* Date Grouped List */}
       {groupedByDate.length === 0 ? (
-        <div className="p-12 text-center bg-[#0D0E15]/80 border border-dashed border-slate-800 rounded-2xl">
-          <CalendarDays className="w-12 h-12 text-slate-600 mx-auto mb-3 animate-pulse" />
-          <h3 className="font-orbitron text-base text-slate-300 font-bold">
-            NO TRADE EXECUTIONS FOUND
-          </h3>
-          <p className="text-xs text-slate-500 font-mono mt-1">
-            Try adjusting your search query, outcome filter, or timeframe selector.
-          </p>
-          <button
-            onClick={() => setActiveTab('logger')}
-            className="mt-4 px-4 py-2 cyber-btn-cyan rounded-lg text-xs font-mono font-bold"
-          >
-            Log New Trade
-          </button>
+        <div className="p-8 text-center bg-[#111420] border border-dashed border-slate-800 rounded-xl">
+          <CalendarDays className="w-8 h-8 text-slate-600 mx-auto mb-2" />
+          <p className="text-xs text-slate-400 font-mono">No trade executions found.</p>
         </div>
       ) : (
-        <div className="space-y-4">
+        <div className="space-y-3">
           {groupedByDate.map((group) => {
             const isExpanded = expandedDates[group.date] !== false;
             const dayCheck = dailyChecks[group.date];
@@ -188,88 +142,61 @@ export default function DateGroupedHistory() {
             return (
               <div
                 key={group.date}
-                className="bg-[#0D0E15]/90 border border-slate-800/80 hover:border-cyan-500/30 rounded-2xl overflow-hidden cyber-panel transition-all"
+                className="bg-[#111420] border border-slate-800 rounded-xl overflow-hidden"
               >
-                {/* Accordion Date Header */}
+                {/* Accordion Header */}
                 <div
                   onClick={() => toggleDateAccordion(group.date)}
-                  className="p-4 sm:p-5 flex flex-wrap items-center justify-between gap-3 cursor-pointer bg-gradient-to-r from-slate-900/60 to-transparent hover:bg-slate-900/80 transition-colors select-none"
+                  className="p-3.5 sm:p-4 flex flex-wrap items-center justify-between gap-3 cursor-pointer bg-slate-900/60 hover:bg-slate-900 transition-colors select-none"
                 >
                   <div className="flex items-center gap-3">
-                    <div className="p-2 bg-slate-900 border border-slate-800 rounded-lg text-cyan-400">
-                      <CalendarDays className="w-5 h-5" />
-                    </div>
-
-                    <div>
-                      <div className="flex items-center gap-2">
-                        <span className="font-orbitron font-bold text-base text-white tracking-wide">
-                          {group.date}
-                        </span>
-                        <span className="text-xs font-mono px-2 py-0.5 rounded-full bg-slate-900 border border-slate-700 text-slate-300">
-                          {group.trades.length} {group.trades.length === 1 ? 'Trade' : 'Trades'}
-                        </span>
-                      </div>
-
-                      <div className="flex items-center gap-2 text-xs font-mono text-slate-400 mt-0.5">
-                        <span className="text-[#00FF9D] font-semibold">{group.wins} Wins</span>
-                        <span>•</span>
-                        <span className="text-[#FF2A5F] font-semibold">{group.losses} Losses</span>
-                        {group.breakevens > 0 && (
-                          <>
-                            <span>•</span>
-                            <span className="text-slate-400">{group.breakevens} BE</span>
-                          </>
-                        )}
-                      </div>
+                    <span className="font-orbitron font-bold text-sm text-white">
+                      {group.date}
+                    </span>
+                    <span className="text-xs font-mono px-2 py-0.5 rounded bg-slate-950 border border-slate-800 text-slate-400">
+                      {group.trades.length} {group.trades.length === 1 ? 'Trade' : 'Trades'}
+                    </span>
+                    <div className="hidden sm:flex items-center gap-1.5 text-xs font-mono text-slate-400">
+                      <span className="text-emerald-400 font-medium">{group.wins}W</span>
+                      <span>/</span>
+                      <span className="text-rose-400 font-medium">{group.losses}L</span>
                     </div>
                   </div>
 
-                  {/* Badges: Net PnL & Discipline Status */}
                   <div className="flex items-center gap-3 font-mono">
-                    {/* Strategy Rules Adherence Badge */}
                     {hasCheckRecord && (
-                      <span
-                        className={`hidden sm:inline-flex items-center gap-1 px-2.5 py-1 rounded-lg text-xs border ${
-                          followedCount === Object.keys(dayCheck.rulesFollowed).length
-                            ? 'bg-emerald-950/40 text-emerald-300 border-emerald-500/40'
-                            : 'bg-rose-950/40 text-rose-300 border-rose-500/40'
-                        }`}
-                      >
-                        <ShieldCheck className="w-3.5 h-3.5" />
-                        <span>{followedCount}/{Object.keys(dayCheck.rulesFollowed).length} Rules Followed</span>
+                      <span className="hidden sm:inline-flex items-center gap-1 px-2 py-0.5 rounded text-xs bg-slate-950 border border-slate-800 text-slate-300">
+                        <ShieldCheck className="w-3 h-3 text-purple-400" />
+                        <span>{followedCount}/{Object.keys(dayCheck.rulesFollowed).length} Rules</span>
                       </span>
                     )}
 
-                    {/* Daily Net PnL Badge */}
                     <div
-                      className={`px-3 py-1.5 rounded-xl border text-sm font-bold cyber-num ${
+                      className={`px-2.5 py-1 rounded-md border text-xs font-bold font-tabular ${
                         group.totalPnl >= 0
-                          ? 'bg-emerald-950/40 border-[#00FF9D]/40 text-[#00FF9D] shadow-neon-emerald'
-                          : 'bg-rose-950/40 border-[#FF2A5F]/40 text-[#FF2A5F] shadow-neon-crimson'
+                          ? 'bg-emerald-950/40 border-emerald-500/30 text-emerald-400'
+                          : 'bg-rose-950/40 border-rose-500/30 text-rose-400'
                       }`}
                     >
                       {formatCurrency(group.totalPnl, currency)}
                     </div>
 
-                    <div className="p-1 text-slate-400">
-                      {isExpanded ? <ChevronUp className="w-5 h-5" /> : <ChevronDown className="w-5 h-5" />}
+                    <div className="text-slate-400">
+                      {isExpanded ? <ChevronUp className="w-4 h-4" /> : <ChevronDown className="w-4 h-4" />}
                     </div>
                   </div>
                 </div>
 
                 {/* Expanded Individual Trade Cards */}
                 {isExpanded && (
-                  <div className="p-4 sm:p-5 pt-0 border-t border-slate-800/80 space-y-3">
+                  <div className="p-3 sm:p-4 pt-3 border-t border-slate-800 space-y-2.5">
                     {dayCheck?.notes && (
-                      <div className="p-3 bg-purple-950/20 border border-purple-500/30 rounded-xl text-xs font-mono text-purple-300 italic mb-3">
-                        <span className="font-bold uppercase text-[10px] tracking-wider block text-purple-400 mb-0.5">
-                          Daily Session Rationale & Psychology:
-                        </span>
+                      <div className="p-2.5 bg-purple-950/20 border border-purple-500/20 rounded-lg text-xs font-mono text-purple-300 italic">
                         "{dayCheck.notes}"
                       </div>
                     )}
 
-                    <div className="grid grid-cols-1 gap-3">
+                    <div className="space-y-2">
                       {group.trades.map((trade, idx) => {
                         const isWin = trade.outcome === 'SUCCEEDED' || trade.pnl > 0;
                         const isLoss = trade.outcome === 'FAILED' || trade.pnl < 0;
@@ -277,97 +204,66 @@ export default function DateGroupedHistory() {
                         return (
                           <div
                             key={trade.id}
-                            className="p-4 bg-slate-900/50 border border-slate-800/80 hover:border-cyan-500/30 rounded-xl transition-all space-y-3"
+                            className="p-3 bg-slate-900 border border-slate-800 rounded-lg space-y-2 font-mono text-xs"
                           >
                             <div className="flex flex-wrap items-center justify-between gap-2">
                               <div className="flex items-center gap-2">
-                                <span className="px-2 py-0.5 text-xs font-mono bg-slate-950 text-cyan-400 rounded border border-slate-800 font-bold">
-                                  Trade #{idx + 1}
+                                <span className="px-1.5 py-0.5 bg-slate-950 text-slate-400 rounded text-[10px]">
+                                  #{idx + 1}
                                 </span>
-                                <span className="font-orbitron font-bold text-white text-base">
+                                <span className="font-bold text-white text-sm">
                                   {trade.asset}
                                 </span>
                                 <span
-                                  className={`px-2 py-0.5 text-[11px] font-mono font-bold rounded flex items-center gap-1 ${
+                                  className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${
                                     trade.direction === 'LONG'
-                                      ? 'bg-cyan-950 text-cyan-300 border border-cyan-500/40'
-                                      : 'bg-purple-950 text-purple-300 border border-purple-500/40'
+                                      ? 'bg-cyan-950 text-cyan-300'
+                                      : 'bg-purple-950 text-purple-300'
                                   }`}
                                 >
-                                  {trade.direction === 'LONG' ? (
-                                    <ArrowUpRight className="w-3.5 h-3.5" />
-                                  ) : (
-                                    <ArrowDownRight className="w-3.5 h-3.5" />
-                                  )}
                                   {trade.direction}
                                 </span>
-
                                 <span
-                                  className={`px-2 py-0.5 text-[11px] font-mono font-bold rounded ${
+                                  className={`px-1.5 py-0.5 text-[10px] font-bold rounded ${
                                     isWin
-                                      ? 'bg-emerald-950 text-[#00FF9D] border border-emerald-500/40'
+                                      ? 'bg-emerald-950 text-emerald-400'
                                       : isLoss
-                                      ? 'bg-rose-950 text-[#FF2A5F] border border-rose-500/40'
+                                      ? 'bg-rose-950 text-rose-400'
                                       : 'bg-slate-800 text-slate-300'
                                   }`}
                                 >
-                                  {trade.outcome || (isWin ? 'WIN' : 'LOSS')}
+                                  {trade.outcome}
                                 </span>
                               </div>
 
-                              <div className="flex items-center gap-3 font-mono">
-                                <div className="text-right">
-                                  <span className="text-[10px] text-slate-500 block">REALIZED</span>
-                                  <span
-                                    className={`text-base font-bold cyber-num ${
-                                      trade.pnl >= 0 ? 'text-[#00FF9D]' : 'text-[#FF2A5F]'
-                                    }`}
-                                  >
-                                    {formatCurrency(trade.pnl, currency)}
-                                  </span>
-                                </div>
+                              <div className="flex items-center gap-3">
+                                <span
+                                  className={`text-sm font-bold font-tabular ${
+                                    trade.pnl >= 0 ? 'text-emerald-400' : 'text-rose-400'
+                                  }`}
+                                >
+                                  {formatCurrency(trade.pnl, currency)}
+                                </span>
 
                                 <button
                                   onClick={() => setDeleteTargetId(trade.id)}
-                                  className="p-1.5 text-slate-500 hover:text-rose-400 hover:bg-slate-800 rounded transition-colors"
-                                  title="Purge trade record"
+                                  className="p-1 text-slate-500 hover:text-rose-400 rounded"
+                                  title="Delete"
                                 >
-                                  <Trash2 className="w-4 h-4" />
+                                  <Trash2 className="w-3.5 h-3.5" />
                                 </button>
                               </div>
                             </div>
 
-                            {/* Execution Pricing Grid */}
-                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2.5 bg-slate-950/70 border border-slate-800/80 rounded-lg text-xs font-mono">
-                              <div>
-                                <span className="text-slate-500 text-[10px] block">ENTRY</span>
-                                <span className="font-semibold text-slate-200 cyber-num">
-                                  {trade.entryPrice}
-                                </span>
-                              </div>
-                              <div>
-                                <span className="text-rose-500 text-[10px] block">STOP LOSS</span>
-                                <span className="font-semibold text-rose-300 cyber-num">
-                                  {trade.stopLoss}
-                                </span>
-                              </div>
-                              <div>
-                                <span className="text-emerald-500 text-[10px] block">TARGET (TP)</span>
-                                <span className="font-semibold text-emerald-300 cyber-num">
-                                  {trade.targetPrice}
-                                </span>
-                              </div>
-                              <div>
-                                <span className="text-purple-400 text-[10px] block">PLANNED R:R</span>
-                                <span className="font-bold text-purple-300 cyber-num">
-                                  {trade.plannedRR}
-                                </span>
-                              </div>
+                            <div className="grid grid-cols-2 sm:grid-cols-4 gap-2 p-2 bg-[#090B12] rounded text-slate-400 text-[11px]">
+                              <div>Entry: <span className="text-slate-200 font-semibold">{trade.entryPrice}</span></div>
+                              <div>SL: <span className="text-rose-400 font-semibold">{trade.stopLoss}</span></div>
+                              <div>TP: <span className="text-emerald-400 font-semibold">{trade.targetPrice}</span></div>
+                              <div>R:R: <span className="text-purple-300 font-bold">{trade.plannedRR}</span></div>
                             </div>
 
-                            {/* Notes */}
                             {trade.notes && (
-                              <p className="text-xs text-slate-300 font-mono italic leading-relaxed">
+                              <p className="text-slate-400 text-[11px] italic">
                                 "{trade.notes}"
                               </p>
                             )}
@@ -383,13 +279,13 @@ export default function DateGroupedHistory() {
         </div>
       )}
 
-      {/* Confirmation Modal for Delete Action */}
+      {/* Delete Confirmation Modal */}
       <ConfirmModal
         isOpen={Boolean(deleteTargetId)}
-        title="PURGE TRADE EXECUTION"
-        message="Are you sure you wish to delete this trade from history? This action is irreversible and will immediately recalculate all cumulative statistics."
-        confirmText="Confirm Purge"
-        cancelText="Abort"
+        title="Delete Trade Execution"
+        message="Are you sure you wish to delete this trade from history? This action is permanent."
+        confirmText="Delete"
+        cancelText="Cancel"
         onConfirm={() => {
           if (deleteTargetId) deleteTrade(deleteTargetId);
           setDeleteTargetId(null);

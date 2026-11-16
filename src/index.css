@@ -9,133 +9,100 @@
 body {
   margin: 0;
   padding: 0;
-  background-color: #050508;
-  font-family: 'Inter', sans-serif;
+  background-color: #0A0C14;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   color: #E2E8F0;
   min-height: 100vh;
 }
 
-/* Custom Scrollbar */
+/* Refined Minimal Scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #090A10;
+  background: #0D101A;
 }
 ::-webkit-scrollbar-thumb {
-  background: rgba(0, 240, 255, 0.25);
-  border-radius: 3px;
+  background: #1F293D;
+  border-radius: 4px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: rgba(0, 240, 255, 0.6);
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+  background: #334155;
 }
 
-/* Cyberpunk Glass Panels */
-.cyber-panel {
-  background: rgba(13, 14, 21, 0.85);
-  backdrop-filter: blur(14px);
-  -webkit-backdrop-filter: blur(14px);
-  border: 1px solid rgba(0, 240, 255, 0.18);
-  box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.6);
-  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+/* Clean Modern Panels */
+.clean-panel {
+  background: #111420;
+  border: 1px solid #1E2436;
+  border-radius: 12px;
+  transition: border-color 0.15s ease;
+}
+.clean-panel:hover {
+  border-color: #2D374D;
 }
 
-.cyber-panel:hover {
-  border-color: rgba(0, 240, 255, 0.35);
+.clean-panel-elevated {
+  background: #161A29;
+  border: 1px solid #242B40;
+  border-radius: 14px;
 }
 
-.cyber-panel-elevated {
-  background: rgba(19, 21, 34, 0.9);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
-  border: 1px solid rgba(0, 240, 255, 0.25);
-  box-shadow: 0 10px 40px -10px rgba(0, 0, 0, 0.8), 0 0 15px -3px rgba(0, 240, 255, 0.15);
+/* Clean Accent Buttons */
+.btn-primary {
+  background: #00D8F6;
+  color: #07090E;
+  font-weight: 600;
+  transition: all 0.15s ease;
 }
-
-/* Cyber Glow Buttons */
-.cyber-btn-cyan {
-  background: linear-gradient(135deg, rgba(0, 240, 255, 0.15) 0%, rgba(0, 240, 255, 0.05) 100%);
-  border: 1px solid #00F0FF;
-  color: #00F0FF;
-  box-shadow: 0 0 10px rgba(0, 240, 255, 0.25);
-  transition: all 0.2s ease;
-}
-.cyber-btn-cyan:hover {
-  background: #00F0FF;
-  color: #050508;
-  box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
+.btn-primary:hover {
+  background: #38E1F9;
   transform: translateY(-1px);
 }
 
-.cyber-btn-magenta {
-  background: linear-gradient(135deg, rgba(184, 41, 234, 0.15) 0%, rgba(184, 41, 234, 0.05) 100%);
-  border: 1px solid #B829EA;
-  color: #E288FF;
-  box-shadow: 0 0 10px rgba(184, 41, 234, 0.25);
-  transition: all 0.2s ease;
+.btn-secondary {
+  background: #1A2030;
+  border: 1px solid #2D374D;
+  color: #CBD5E1;
+  transition: all 0.15s ease;
 }
-.cyber-btn-magenta:hover {
-  background: #B829EA;
+.btn-secondary:hover {
+  background: #222A3E;
   color: #FFFFFF;
-  box-shadow: 0 0 20px rgba(184, 41, 234, 0.6);
-  transform: translateY(-1px);
+  border-color: #3B4764;
 }
 
-.cyber-btn-emerald {
-  background: linear-gradient(135deg, rgba(0, 255, 157, 0.15) 0%, rgba(0, 255, 157, 0.05) 100%);
-  border: 1px solid #00FF9D;
-  color: #00FF9D;
-  box-shadow: 0 0 10px rgba(0, 255, 157, 0.25);
-  transition: all 0.2s ease;
+.btn-success {
+  background: #10B981;
+  color: #042F2E;
+  font-weight: 600;
+  transition: all 0.15s ease;
 }
-.cyber-btn-emerald:hover {
-  background: #00FF9D;
-  color: #050508;
-  box-shadow: 0 0 20px rgba(0, 255, 157, 0.6);
-  transform: translateY(-1px);
+.btn-success:hover {
+  background: #34D399;
 }
 
-.cyber-btn-crimson {
-  background: linear-gradient(135deg, rgba(255, 42, 95, 0.15) 0%, rgba(255, 42, 95, 0.05) 100%);
-  border: 1px solid #FF2A5F;
-  color: #FF668B;
-  box-shadow: 0 0 10px rgba(255, 42, 95, 0.25);
-  transition: all 0.2s ease;
-}
-.cyber-btn-crimson:hover {
-  background: #FF2A5F;
+.btn-danger {
+  background: #EF4444;
   color: #FFFFFF;
-  box-shadow: 0 0 20px rgba(255, 42, 95, 0.6);
-  transform: translateY(-1px);
+  font-weight: 600;
+  transition: all 0.15s ease;
+}
+.btn-danger:hover {
+  background: #F87171;
 }
 
 /* Number formatting */
-.cyber-num {
+.font-tabular {
   font-family: 'JetBrains Mono', monospace;
   font-variant-numeric: tabular-nums;
-  letter-spacing: -0.02em;
+  letter-spacing: -0.01em;
 }
 
-/* Cyber text glows */
-.glow-text-cyan {
-  text-shadow: 0 0 10px rgba(0, 240, 255, 0.6);
-}
-.glow-text-emerald {
-  text-shadow: 0 0 10px rgba(0, 255, 157, 0.6);
-}
-.glow-text-crimson {
-  text-shadow: 0 0 10px rgba(255, 42, 95, 0.6);
-}
-.glow-text-magenta {
-  text-shadow: 0 0 10px rgba(184, 41, 234, 0.6);
-}
-
-/* Cyber grid background pattern */
-.cyber-grid-bg {
+/* Subtle clean grid background */
+.subtle-grid-bg {
   background-image: 
-    linear-gradient(to right, rgba(0, 240, 255, 0.035) 1px, transparent 1px),
-    linear-gradient(to bottom, rgba(0, 240, 255, 0.035) 1px, transparent 1px);
-  background-size: 40px 40px;
+    linear-gradient(to right, rgba(255, 255, 255, 0.02) 1px, transparent 1px),
+    linear-gradient(to bottom, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
+  background-size: 32px 32px;
 }

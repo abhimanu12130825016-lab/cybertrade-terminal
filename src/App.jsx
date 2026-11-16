@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
-import { AuthProvider } from './context/AuthContext';
+import { AuthProvider, useAuth } from './context/AuthContext';
 import { JournalProvider, useJournal } from './context/JournalContext';
 import CyberBackground from './components/common/CyberBackground';
+import LandingPage from './components/auth/LandingPage';
 import Navbar from './components/layout/Navbar';
 import Sidebar from './components/layout/Sidebar';
 import BottomNav from './components/layout/BottomNav';
@@ -11,12 +12,27 @@ import DateGroupedHistory from './components/history/DateGroupedHistory';
 import StrategyRulesManager from './components/rules/StrategyRulesManager';
 import SettingsBackupView from './components/settings/SettingsBackupView';
 
-function MainLayout() {
+function TerminalApp() {
+  const { currentUser, loading } = useAuth();
   const { activeTab } = useJournal();
   const [isSidebarCollapsed, setIsSidebarCollapsed] = useState(false);
 
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#0A0C14] flex items-center justify-center text-cyan-400 font-mono text-sm">
+        Initializing Terminal...
+      </div>
+    );
+  }
+
+  // If no authenticated user, present the clean Landing / Info & Login Page
+  if (!currentUser) {
+    return <LandingPage />;
+  }
+
+  // Once authenticated, present the clean Terminal Dashboard
   return (
-    <div className="relative min-h-screen flex flex-col bg-[#050508] text-slate-100 overflow-x-hidden">
+    <div className="relative min-h-screen flex flex-col bg-[#0A0C14] text-slate-100 overflow-x-hidden">
       <CyberBackground />
       <Navbar />
 
@@ -44,7 +60,7 @@ export default function App() {
   return (
     <AuthProvider>
       <JournalProvider>
-        <MainLayout />
+        <TerminalApp />
       </JournalProvider>
     </AuthProvider>
   );
