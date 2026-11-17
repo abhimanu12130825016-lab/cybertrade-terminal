@@ -11,6 +11,7 @@ import DateTradeLogger from './components/tradeLogger/DateTradeLogger';
 import DateGroupedHistory from './components/history/DateGroupedHistory';
 import StrategyRulesManager from './components/rules/StrategyRulesManager';
 import SettingsBackupView from './components/settings/SettingsBackupView';
+import { ThemeProvider } from './context/ThemeContext';
 
 function TerminalApp() {
   const { currentUser, loading } = useAuth();
@@ -58,10 +59,12 @@ function TerminalApp() {
 
 export default function App() {
   return (
-    <AuthProvider>
-      <JournalProvider>
-        <TerminalApp />
-      </JournalProvider>
-    </AuthProvider>
+    <ThemeProvider>
+      <AuthProvider>
+        <JournalProvider>
+          <TerminalApp />
+        </JournalProvider>
+      </AuthProvider>
+    </ThemeProvider>
   );
 }

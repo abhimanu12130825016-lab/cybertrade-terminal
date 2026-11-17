@@ -11,12 +11,16 @@ import {
   Activity,
   Layers,
   Sparkles,
-  AlertCircle
+  AlertCircle,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function LandingPage() {
   const { login, register, loginAsDemo, evaluatePasswordStrength } = useAuth();
+  const { theme, toggleTheme } = useTheme();
 
   const [mode, setMode] = useState('login'); // 'login' | 'register'
   const [name, setName] = useState('');
@@ -79,6 +83,14 @@ export default function LandingPage() {
           </div>
 
           <div className="flex items-center gap-3">
+            <button
+              onClick={toggleTheme}
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              className="p-2 text-slate-400 hover:text-lime-400 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg transition-colors"
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
             <button
               onClick={handleInstantDemo}
               className="px-3.5 py-1.5 text-xs font-medium rounded-lg bg-cyan-500/10 hover:bg-cyan-500/20 text-cyan-300 border border-cyan-500/30 transition-all flex items-center gap-1.5"

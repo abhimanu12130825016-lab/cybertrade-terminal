@@ -6,15 +6,19 @@ import {
   LogOut,
   SlidersHorizontal,
   ChevronDown,
-  Shield
+  Shield,
+  Sun,
+  Moon
 } from 'lucide-react';
 import { useAuth } from '../../context/AuthContext';
 import { useJournal } from '../../context/JournalContext';
 import BackupExportModal from '../common/BackupExportModal';
+import { useTheme } from '../../context/ThemeContext';
 
 export default function Navbar() {
   const { currentUser, logout, isCloudConfigured } = useAuth();
   const { currency, setCurrency, activeTab, setActiveTab } = useJournal();
+  const { theme, toggleTheme } = useTheme();
 
   const [isBackupOpen, setIsBackupOpen] = useState(false);
   const [showUserMenu, setShowUserMenu] = useState(false);
@@ -51,6 +55,15 @@ export default function Navbar() {
 
           {/* Right Action Icons & Controls */}
           <div className="flex items-center gap-2 sm:gap-3">
+            <button
+              onClick={toggleTheme}
+              title={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              aria-label={`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`}
+              className="p-2 text-slate-400 hover:text-lime-400 bg-slate-900 hover:bg-slate-800 border border-slate-800 rounded-lg transition-colors"
+            >
+              {theme === 'dark' ? <Sun className="w-4 h-4" /> : <Moon className="w-4 h-4" />}
+            </button>
+
             {/* Currency Selector */}
             <div className="flex items-center bg-slate-900 border border-slate-800 rounded-lg p-0.5 text-xs font-mono">
               {['$', '₹', '€'].map((sym) => (
